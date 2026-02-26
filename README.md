@@ -222,11 +222,12 @@ function getChromeUserDataDir() {
 
 # Step 6: Save the file
 
-Press:
+Press: (
 
 ```
 Control + O
 ```
+(^ the letter O)
 
 Press Enter
 
@@ -273,6 +274,12 @@ const experienceIds = [
   '5555555555'
 ];
 ```
+
+When done, save it by typing 
+```
+:wq
+```
+and pressing enter/return
 
 ---
 
