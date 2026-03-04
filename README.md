@@ -86,7 +86,7 @@ Press Enter
 
 ---
 
-# Step 5: Copy paste this entire script
+# Step 5: Copy paste this entire script (or find it under https://github.com/sjanefullerton/csv-export-automation/blob/main/roblox-export.js)
 
 ```
 const { chromium } = require('playwright');
