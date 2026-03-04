@@ -388,6 +388,8 @@ Close Chrome and run again.
 
 ---
 
+Not final version, still working on getting the login to be automated.
+
 # Done
 
 Your CSV exports are now fully automated.
