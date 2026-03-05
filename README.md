@@ -90,12 +90,9 @@ Press Enter
 
 ```
 const { chromium } = require('playwright');
-const os = require('os');
-const path = require('path');
-const fs = require('fs');
 
 const experienceIds = [
-  '123456789' # PUT YOUR EXPERIENCE ID(s) HERE
+  '123456789' // PUT YOUR EXPERIENCE ID(s) HERE
 ];
 
 const analyticsPages = [
@@ -119,47 +116,24 @@ const monetizationPages = [
   'avatar-creation-tokens'
 ];
 
-function getChromeUserDataDir() {
-
-  const home = os.homedir();
-  const platform = os.platform();
-
-  if (platform === 'darwin') {
-    return path.join(home, 'Library/Application Support/Google/Chrome');
-  }
-
-  if (platform === 'win32') {
-    return path.join(home, 'AppData/Local/Google/Chrome/User Data');
-  }
-
-  if (platform === 'linux') {
-    return path.join(home, '.config/google-chrome');
-  }
-
-  throw new Error('Unsupported OS');
-}
-
 (async () => {
 
-  const chromeDir = getChromeUserDataDir();
+  const browser = await chromium.launch({
+    headless: false,
+    channel: 'chrome'
+  });
 
-  console.log('Using Chrome profile:', chromeDir);
+  const context = await browser.newContext();
+  const page = await context.newPage();
 
-  if (!fs.existsSync(chromeDir)) {
-    console.log('Chrome profile not found. Please open Chrome first.');
-    return;
-  }
+  console.log('\nOpening Roblox login...');
 
-  const browser = await chromium.launchPersistentContext(
-    chromeDir,
-    {
-      headless: false,
-      channel: 'chrome',
-      args: ['--profile-directory=Default']
-    }
-  );
+  await page.goto('https://www.roblox.com/login');
 
-  const page = await browser.newPage();
+  console.log('\nPlease log in to Roblox in the browser.');
+  console.log('Press ENTER here once you are logged in.\n');
+
+  await new Promise(resolve => process.stdin.once('data', resolve));
 
   async function exportPage(url) {
 
