@@ -322,7 +322,8 @@ node roblox-export.js
 ```
 
 Chrome will open automatically.
-
+# Step 11: Login to Roblox
+Then return to terminal and hit enter/return.
 CSV files will download automatically.
 
 ---
