@@ -28,19 +28,19 @@ const monetizationPages = [
 ];
 
 const extraPages = [
-  { name: 'performance', url: 'analytics/performance?annotation=Announcement&filter_DataStoreTypeV2=Standard&breakdown=Platform' },
-  { name: 'errors', url: 'analytics/errors?annotation=Announcement&filter_DataStoreTypeV2=Standard&breakdown=Platform' },
-  { name: 'memory-stores', url: 'analytics/memory-stores?annotation=Announcement&filter_DataStoreTypeV2=Standard&breakdown=Platform' },
-  { name: 'speech-to-text', url: 'analytics/speech-to-text?annotation=Announcement&filter_DataStoreTypeV2=Standard&breakdown=Platform' },
-  { name: 'text-to-speech', url: 'analytics/text-to-speech?annotation=Announcement&filter_DataStoreTypeV2=Standard&breakdown=Platform' },
-  { name: 'http-service', url: 'analytics/http-service?annotation=Announcement&filter_DataStoreTypeV2=Standard&breakdown=HttpServiceMethod' },
-  { name: 'messaging-service', url: 'analytics/messaging-service?annotation=Announcement&filter_DataStoreTypeV2=Standard' },
-  { name: 'data-stores', url: 'data-stores?annotation=Announcement&filter_DataStoreTypeV2=Standard&breakdown=Platform&activeTab=Dashboard' },
-  { name: 'feedback', url: 'feedback?annotation=Announcement&filter_DataStoreTypeV2=Standard' },
-  { name: 'events', url: 'events?annotation=Announcement&filter_DataStoreTypeV2=Standard&activeTab=creations' },
-  { name: 'recommendation-service', url: 'recommendation-service?annotation=Announcement&filter_DataStoreTypeV2=Standard' },
-  { name: 'safety-overview', url: 'safety/overview?annotation=Announcement&filter_DataStoreTypeV2=Standard' },
-  { name: 'safety-bans', url: 'safety/bans?annotation=Announcement&filter_DataStoreTypeV2=Standard' }
+  //{ name: 'performance', url: 'analytics/performance?annotation=Announcement&filter_DataStoreTypeV2=Standard&breakdown=Platform' },
+  //{ name: 'errors', url: 'analytics/errors?annotation=Announcement&filter_DataStoreTypeV2=Standard&breakdown=Platform' },
+  //{ name: 'memory-stores', url: 'analytics/memory-stores?annotation=Announcement&filter_DataStoreTypeV2=Standard&breakdown=Platform' },
+  //{ name: 'speech-to-text', url: 'analytics/speech-to-text?annotation=Announcement&filter_DataStoreTypeV2=Standard&breakdown=Platform' },
+  //{ name: 'text-to-speech', url: 'analytics/text-to-speech?annotation=Announcement&filter_DataStoreTypeV2=Standard&breakdown=Platform' },
+  //{ name: 'http-service', url: 'analytics/http-service?annotation=Announcement&filter_DataStoreTypeV2=Standard&breakdown=HttpServiceMethod' },
+  //{ name: 'messaging-service', url: 'analytics/messaging-service?annotation=Announcement&filter_DataStoreTypeV2=Standard' },
+  //{ name: 'data-stores', url: 'data-stores?annotation=Announcement&filter_DataStoreTypeV2=Standard&breakdown=Platform&activeTab=Dashboard' },
+  //{ name: 'feedback', url: 'feedback?annotation=Announcement&filter_DataStoreTypeV2=Standard' },
+  //{ name: 'events', url: 'events?annotation=Announcement&filter_DataStoreTypeV2=Standard&activeTab=creations' },
+  //{ name: 'recommendation-service', url: 'recommendation-service?annotation=Announcement&filter_DataStoreTypeV2=Standard' },
+  //{ name: 'safety-overview', url: 'safety/overview?annotation=Announcement&filter_DataStoreTypeV2=Standard' },
+  //{ name: 'safety-bans', url: 'safety/bans?annotation=Announcement&filter_DataStoreTypeV2=Standard' }
 ];
 
 (async () => {
