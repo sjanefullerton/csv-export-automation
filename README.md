@@ -93,7 +93,7 @@ Press Enter
 
 # Step 6: Save the file
 
-Press: (
+Press: 
 
 ```
 Control + O
