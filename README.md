@@ -63,7 +63,19 @@ Restart your computer after installation.
 
 ---
 
+## Open Terminal
+
+The entire process will be run in **Terminal**.
+
+On Mac, you can open it by using Spotlight search or navigating to:
+
+Applications → Utilities → Terminal
+
+---
+
 ## Install Playwright
+
+In Terminal, type and run the following commands:
 
 ```bash
 npm install playwright
