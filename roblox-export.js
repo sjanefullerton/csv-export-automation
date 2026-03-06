@@ -3,8 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const experienceIds = [
-  '123456789', // PUT YOUR EXPERIENCE ID(s) HERE
-  '987654321'
+  '123456789' // ADD MORE EXPERIENCE IDs IF NEEDED
 ];
 
 const analyticsPages = [
@@ -45,12 +44,10 @@ const extraPages = [
 ];
 
 (async () => {
-
   const BASE_EXPORT_DIR = path.join(process.cwd(), 'roblox-exports');
   if (!fs.existsSync(BASE_EXPORT_DIR)) fs.mkdirSync(BASE_EXPORT_DIR);
 
   const browser = await chromium.launch({ headless: false, channel: 'chrome' });
-
   const context = await browser.newContext({ acceptDownloads: true });
   const page = await context.newPage();
 
@@ -63,10 +60,10 @@ const extraPages = [
   async function exportPage(url, experienceFolder, pageLabel) {
     console.log('\nOpening:', url);
     await page.goto(url, { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(8000); // wait longer for pages with many CSVs
+    await page.waitForTimeout(8000);
 
     const buttons = await page.$$(
-      '[data-testid="chart-export-button"], [aria-label="Export your data to a .CSV file"]'
+      '[data-testid="chart-export-button"], [aria-label="Export your data to a .CSV file"], [data-testid="chart-download-button"]'
     );
 
     console.log('Found', buttons.length, 'export buttons');
@@ -82,7 +79,7 @@ const extraPages = [
 
         const filename = path.join(
           experienceFolder,
-          `experience-${pageLabel}_chart-${i + 1}.csv`
+          `${pageLabel}_chart-${i + 1}.csv`
         );
 
         await download.saveAs(filename);
@@ -95,6 +92,75 @@ const extraPages = [
     }
   }
 
+  async function exportCustomEvents(experienceId, experienceFolder) {
+    const customFolder = path.join(experienceFolder, 'custom-events');
+    if (!fs.existsSync(customFolder)) fs.mkdirSync(customFolder);
+
+    const url = `https://create.roblox.com/dashboard/creations/experiences/${experienceId}/analytics/custom?annotation=Announcement`;
+    console.log('\nOpening Custom Events:', url);
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    await page.waitForTimeout(8000);
+
+    // Find the Custom Event dropdown
+    const label = await page.locator('label', { hasText: 'Custom Event Name' }).first();
+    if (!label) {
+      console.log('Custom Events page not found.');
+      return;
+    }
+
+    const container = await label.locator('..').first(); // parent container
+    const openButton = await container.locator('button[aria-label="Open"]').first();
+
+    if (!openButton) {
+      console.log('Could not find Custom Event dropdown button.');
+      return;
+    }
+
+    await openButton.click();
+    await page.waitForTimeout(1500);
+
+    // Get all custom event options
+    const listbox = await page.locator('[role="listbox"]').first();
+    const options = await listbox.locator('li').all(); // all <li> children
+
+    console.log('Found', options.length, 'custom events');
+
+    for (let i = 0; i < options.length; i++) {
+      const option = options[i];
+      const eventName = (await option.textContent()).trim().replace(/\s+/g, '_');
+
+      console.log('Exporting custom event:', eventName);
+
+      await option.click();
+      await page.waitForTimeout(4000); // wait for chart to update
+
+      const downloadButton = await page.locator('[data-testid="chart-download-button"]').first();
+      if (!downloadButton) {
+        console.log('CSV download button not found — skipping.');
+        continue;
+      }
+
+      try {
+        const [download] = await Promise.all([
+          page.waitForEvent('download', { timeout: 15000 }),
+          downloadButton.click()
+        ]);
+
+        const filename = path.join(customFolder, `${eventName}.csv`);
+        await download.saveAs(filename);
+        console.log('Saved:', filename);
+      } catch (err) {
+        console.log('Download failed for event:', eventName);
+      }
+
+      // Re-open dropdown for next event
+      await openButton.click();
+      await page.waitForTimeout(1500);
+    }
+
+    console.log('Finished exporting all custom events');
+  }
+
   for (const experienceId of experienceIds) {
     const experienceFolder = path.join(BASE_EXPORT_DIR, experienceId);
     if (!fs.existsSync(experienceFolder)) fs.mkdirSync(experienceFolder);
@@ -103,8 +169,12 @@ const extraPages = [
 
     console.log('\nAnalytics exports...');
     for (const type of analyticsPages) {
-      const url = `https://create.roblox.com/dashboard/creations/experiences/${experienceId}/analytics/${type}?annotation=Announcement`;
-      await exportPage(url, experienceFolder, `analytics-${type}`);
+      if (type === 'custom') {
+        await exportCustomEvents(experienceId, experienceFolder);
+      } else {
+        const url = `https://create.roblox.com/dashboard/creations/experiences/${experienceId}/analytics/${type}?annotation=Announcement`;
+        await exportPage(url, experienceFolder, `analytics-${type}`);
+      }
     }
 
     console.log('\nMonetization exports...');
