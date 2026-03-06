@@ -265,3 +265,8 @@ Not final version, still working on getting the login to be automated.
 # Done
 
 Your CSV exports are now fully automated.
+
+# My next steps:
+1. Update the script so that each custom event can dynamically navigate to each breakdown and download its CSV automatically.
+2. Explore automating the login step by using the current Chrome session (so you’re already logged into Roblox).
+3. Explore selecting which CSVs to download per page.
