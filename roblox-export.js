@@ -7,24 +7,24 @@ const experienceIds = [
 ];
 
 const analyticsPages = [
-  'retention',
-  'engagement',
-  'acquisition',
-  'audience',
-  'economy',
-  'funnels',
+  //'retention',
+  //'engagement',
+  //'acquisition',
+  //'audience',
+  //'economy',
+  //'funnels',
   'custom'
 ];
 
 const monetizationPages = [
-  'overview',
-  'developer-products',
-  'passes',
-  'avatar-items',
-  'immersive-ads',
-  'subscriptions',
-  'creator-rewards',
-  'avatar-creation-tokens'
+  //'overview',
+  //'developer-products',
+  //'passes',
+  //'avatar-items',
+  //'immersive-ads',
+  //'subscriptions',
+  //'creator-rewards',
+  //'avatar-creation-tokens'
 ];
 
 const extraPages = [
@@ -92,73 +92,114 @@ const extraPages = [
     }
   }
 
-  async function exportCustomEvents(experienceId, experienceFolder) {
+    async function exportCustomEvents(experienceId, experienceFolder) {
     const customFolder = path.join(experienceFolder, 'custom-events');
     if (!fs.existsSync(customFolder)) fs.mkdirSync(customFolder);
-
+  
     const url = `https://create.roblox.com/dashboard/creations/experiences/${experienceId}/analytics/custom?annotation=Announcement`;
     console.log('\nOpening Custom Events:', url);
     await page.goto(url, { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(8000);
-
+  
     // Find the Custom Event dropdown
     const label = await page.locator('label', { hasText: 'Custom Event Name' }).first();
     if (!label) {
       console.log('Custom Events page not found.');
       return;
     }
-
+  
     const container = await label.locator('..').first(); // parent container
     const openButton = await container.locator('button[aria-label="Open"]').first();
-
+  
     if (!openButton) {
       console.log('Could not find Custom Event dropdown button.');
       return;
     }
-
+  
     await openButton.click();
     await page.waitForTimeout(1500);
-
+  
     // Get all custom event options
     const listbox = await page.locator('[role="listbox"]').first();
     const options = await listbox.locator('li').all(); // all <li> children
-
+  
     console.log('Found', options.length, 'custom events');
-
+  
     for (let i = 0; i < options.length; i++) {
       const option = options[i];
       const eventName = (await option.textContent()).trim().replace(/\s+/g, '_');
-
+  
       console.log('Exporting custom event:', eventName);
-
+  
       await option.click();
       await page.waitForTimeout(4000); // wait for chart to update
-
-      const downloadButton = await page.locator('[data-testid="chart-download-button"]').first();
-      if (!downloadButton) {
-        console.log('CSV download button not found — skipping.');
-        continue;
+  
+      // Find breakdown dropdowns
+      const breakdownDropdowns = await page.locator('label', { hasText: 'Breakdown' }).all();
+  
+      if (breakdownDropdowns.length === 0) {
+        console.log('No breakdown dropdowns found — downloading default CSV');
+        const downloadButton = await page.locator('[data-testid="chart-download-button"]').first();
+        if (downloadButton) {
+          try {
+            const [download] = await Promise.all([
+              page.waitForEvent('download', { timeout: 15000 }),
+              downloadButton.click()
+            ]);
+            const filename = path.join(customFolder, `${eventName}.csv`);
+            await download.saveAs(filename);
+            console.log('Saved:', filename);
+          } catch (err) {
+            console.log('Download failed for event:', eventName);
+          }
+        }
+      } else {
+        // Iterate through all breakdown dropdowns
+        for (let b = 0; b < breakdownDropdowns.length; b++) {
+          const breakdownLabel = breakdownDropdowns[b];
+          const dropdownButton = await breakdownLabel.locator('..').locator('button[aria-label="Open"]').first();
+          await dropdownButton.click();
+          await page.waitForTimeout(1000);
+  
+          const listbox = await page.locator('[role="listbox"]').first();
+          const breakdownOptions = await listbox.locator('li').all();
+  
+          for (let j = 0; j < breakdownOptions.length; j++) {
+            const breakdownOption = breakdownOptions[j];
+            const breakdownName = (await breakdownOption.textContent()).trim().replace(/\s+/g, '_');
+  
+            console.log(`Downloading CSV for event: ${eventName}, breakdown: ${breakdownName}`);
+            await breakdownOption.click();
+            await page.waitForTimeout(3000);
+  
+            const downloadButton = await page.locator('[data-testid="chart-download-button"]').first();
+            if (downloadButton) {
+              try {
+                const [download] = await Promise.all([
+                  page.waitForEvent('download', { timeout: 15000 }),
+                  downloadButton.click()
+                ]);
+                const filename = path.join(customFolder, `${eventName}_${breakdownName}.csv`);
+                await download.saveAs(filename);
+                console.log('Saved:', filename);
+              } catch (err) {
+                console.log('Download failed for event:', eventName, 'breakdown:', breakdownName);
+              }
+            }
+  
+            // Re-open breakdown dropdown for next option
+            await dropdownButton.click();
+            await page.waitForTimeout(1000);
+          }
+        }
       }
-
-      try {
-        const [download] = await Promise.all([
-          page.waitForEvent('download', { timeout: 15000 }),
-          downloadButton.click()
-        ]);
-
-        const filename = path.join(customFolder, `${eventName}.csv`);
-        await download.saveAs(filename);
-        console.log('Saved:', filename);
-      } catch (err) {
-        console.log('Download failed for event:', eventName);
-      }
-
-      // Re-open dropdown for next event
+  
+      // Re-open custom event dropdown for next event
       await openButton.click();
       await page.waitForTimeout(1500);
     }
-
-    console.log('Finished exporting all custom events');
+  
+    console.log('Finished exporting all custom events with breakdowns');
   }
 
   for (const experienceId of experienceIds) {
