@@ -24,7 +24,7 @@ The script creates folders containing downloaded CSV files for each experience.
 Example structure:
 
 ```
-csv-export/
+roblox-exports/
 
 ├── 1234567890/
 │   ├── retention.csv
