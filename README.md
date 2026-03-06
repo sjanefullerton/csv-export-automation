@@ -151,7 +151,7 @@ Steps:
 To stop the script early:
 
 ```bash
-Control + Z
+Control Z
 ```
 
 ---
