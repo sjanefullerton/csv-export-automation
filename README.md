@@ -1,272 +1,102 @@
 # Roblox CSV Export Automation (Playwright)
 
-This tool automatically downloads CSV analytics and monetization data from Roblox using your existing Chrome login.
-Works for multiple experiences.
+Automates CSV downloads from Roblox analytics and monetization pages using your Chrome login.  
+Supports multiple experiences.
 
 ---
 
-# Step 1: Install Node.js (one-time)
+## Prerequisites: Install Node.js
 
-Go to:
-
-[https://nodejs.org](https://nodejs.org)
-
-Download and install the **LTS version**
-
-Restart your computer after installing.
+[https://nodejs.org](https://nodejs.org) → download **LTS version** → restart computer.
 
 ---
 
-# Step 2: Open Terminal
+## Install Playwright
 
-## Mac
-
-Press:
-
-Command + Space
-
-(or just use the search bar)
-
-Type:
-
-```
-Terminal
-```
-
-Press Enter
-
----
-
-## Windows
-
-Press:
-
-```
-Windows Key + R
-```
-
-Type:
-
-```
-cmd
-```
-
-Press Enter
-
----
-
-## Linux
-
-Open Terminal normally.
-
----
-
-# Step 3: Install Playwright
-
-Copy paste:
-
-```
+```bash
 npm install playwright
 npx playwright install chromium
-```
-
-Wait until installation finishes.
+````
 
 ---
 
-# Step 4: Create the script file
+## Create the Script File
 
-Copy paste:
-
-```
+```bash
 nano roblox-export.js
 ```
 
-Press Enter
+Paste the script from:
+[roblox-export.js](https://github.com/sjanefullerton/csv-export-automation/blob/main/roblox-export.js)
 
----
+Save & exit:
 
-# Step 5: Copy paste the script from https://github.com/sjanefullerton/csv-export-automation/blob/main/roblox-export.js
-** comment or uncomment the pages you want to download .csv's from! (comment with // & uncomment by deleting the //)
-
----
-
-# Step 6: Save the file
-
-Press: 
-
-```
-Control + O
-```
-(^ the letter O)
-
-Press Enter
-
-Then:
-
-```
+```bash
+Control + O → Enter
 Control + X
 ```
 
 ---
 
-# Step 7: Set your Experience ID(s)
+## Configure Experience IDs
 
-Open the file:
-
-```
+Edit the script (```bash
 nano roblox-export.js
-```
+```):
 
-Find this section:
-
-```
+```js
 const experienceIds = [
-  '123456789' # PUT YOUR EXPERIENCE ID(s) HERE
+  '1234567890', '9876543210'
 ];
 ```
 
-Replace with your own experience ID(s).
-
-Example:
+Find your Experience ID in the URL:
 
 ```
-const experienceIds = [
-  '1234567890'
-];
+https://create.roblox.com/dashboard/creations/experiences/<ExperienceID>/analytics
 ```
-
-Multiple experiences example:
-
-```
-const experienceIds = [
-  '1234567890',
-  '9876543210',
-  '5555555555'
-];
-```
-
-When done, save it by typing 
-```
-:wq
-```
-and pressing enter/return
 
 ---
 
-# How to find your Experience ID
+## Optional: Choose Pages to Export
 
-Go to your Roblox dashboard.
+Edit these arrays in the script. **Uncomment pages you want to export CSVs by deleting the // on each page line**
 
-Example URL:
-
-```
-https://create.roblox.com/dashboard/creations/experiences/123456789/analytics
-```
-
-The number:
-
-```
-123456789
-```
-
-is your Experience ID.
-
----
-
-# Step 8: (Optional) Choose which pages export
-
-You can edit these sections:
-
-```
+```js
 const analyticsPages = [ ... ]
-```
-
-and
-
-```
 const monetizationPages = [ ... ]
 ```
 
-Remove or add pages as needed.
+## Run the Script
 
----
-
-# Step 9: Close Chrome completely
-
-IMPORTANT.
-
-Close all Chrome windows.
-
-Mac:
-
-```
-Command + Q
-```
-
-Windows/Linux:
-
-Close Chrome fully.
-
----
-
-# Step 10: Run the script
-
-Copy paste:
-
-```
+```bash
 node roblox-export.js
 ```
+If you want to end the script before it is finished
+```bash
+Control + Z
+```
 
-Chrome will open automatically.
-# Step 11: Login to Roblox
-Then return to terminal and hit enter/return.
-CSV files will download automatically.
+
+1. Chrome opens automatically
+2. Log in to Roblox
+3. Return to terminal & hit **Enter**
+4. CSVs will download automatically into a folder next to the script
 
 ---
 
-# Future usage
+## Future Usage
 
 Just run:
 
-```
+```bash
 node roblox-export.js
 ```
 
 ---
 
-# What this automates
+## Future Improvements
 
-Exports CSVs from:
-
-• Retention
-• Engagement
-• Acquisition
-• Audience
-• Economy
-• Funnels
-• Custom
-• Monetization pages
-
-For every Experience ID listed.
-
----
-
-# Troubleshooting
-
-If Roblox login appears:
-
-Close Chrome and run again.
-
----
-
-Not final version, still working on getting the login to be automated.
-
-# Done
-
-Your CSV exports are now fully automated.
-
-# My next steps:
-1. Update the script so that each custom event can dynamically navigate to each breakdown and download its CSV automatically.
-2. Explore automating the login step by using the current Chrome session (so you’re already logged into Roblox).
-3. Explore selecting which CSVs to download per page.
+1. Dynamically navigate and download breakdown CSVs for each custom event
+2. Automate login using current Chrome session
+3. Allow selecting which CSVs to download per page
